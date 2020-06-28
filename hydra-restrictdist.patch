@@ -1,0 +1,32 @@
+diff --git src/lib/Hydra/Controller/Root.pm src/lib/Hydra/Controller/Root.pm
+index a9b0d558..71869ba0 100644
+--- a/src/lib/Hydra/Controller/Root.pm
++++ b/src/lib/Hydra/Controller/Root.pm
+@@ -19,6 +19,11 @@ use Net::Prometheus;
+ # Put this controller at top-level.
+ __PACKAGE__->config->{namespace} = '';
+ 
++sub isRedistRestricted {
++  my ($path) = @_;
++
++  return index($path, "-RESTRICTDIST-") >= 0;
++}
+ 
+ sub noLoginNeeded {
+   my ($c) = @_;
+@@ -319,6 +324,7 @@ sub nar :Local :Args(1) {
+         $path = $Nix::Config::storeDir . "/$path";
+ 
+         gone($c, "Path " . $path . " is no longer available.") unless isValidPath($path);
++        notFound($c, "Redistribution restricted") if isRedistRestricted($path);
+ 
+         $c->stash->{current_view} = 'NixNAR';
+         $c->stash->{storePath} = $path;
+@@ -368,6 +374,7 @@ sub narinfo :LocalRegex('^([a-z0-9]+).narinfo$') :Args(0) {
+             setCacheHeaders($c, 60 * 60);
+             return;
+         }
++        notFound($c, "Redistribution restricted") if isRedistRestricted($path);
+ 
+         $c->stash->{storePath} = $path;
+         $c->forward('Hydra::View::NARInfo');
