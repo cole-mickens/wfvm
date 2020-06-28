@@ -113,6 +113,7 @@ in
       '';
   };
   # You need to run the IDE at least once or else most of the Visual Studio trashware won't actually work.
+  # With the /ResetSettings flag, it will actually start without pestering you about opening a Microsoft account.
   msvc-ide-unbreak = {
     name = "MSVC-ide-unbreak";
     script =
