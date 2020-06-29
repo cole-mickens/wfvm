@@ -20,7 +20,7 @@ Example applications:
 * Running Windows unit tests on Hydra.
 
 
-Thanks to Adam Höse from Tweag.io for help with with this development.
+Thanks to Adam Höse from Tweag.io for help with this development.
 
 How to use
 ==========
