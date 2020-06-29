@@ -156,7 +156,17 @@ let
     echo "Done"
 
     mv c.img $out
-  '')) baseImage installCommands;
+  '')) baseImage (
+    [
+      {
+        name = "DisablePasswordExpiry";
+        script = ''
+          win exec 'wmic UserAccount set PasswordExpires=False'
+        '';
+      }
+    ] ++
+    installCommands
+  );
 
 in
 
