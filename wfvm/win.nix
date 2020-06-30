@@ -161,7 +161,7 @@ let
       {
         name = "DisablePasswordExpiry";
         script = ''
-          win exec 'wmic UserAccount set PasswordExpires=False'
+          win-exec 'wmic UserAccount set PasswordExpires=False'
         '';
       }
     ] ++
