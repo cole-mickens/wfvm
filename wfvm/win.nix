@@ -96,7 +96,7 @@ let
       ''
         #!${pkgs.runtimeShell}
         set -euxo pipefail
-        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs ]}:$PATH
+        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs pkgs.wimlib ]}:$PATH
 
         # Create a bootable "USB" image
         # Booting in USB mode circumvents the "press any key to boot from cdrom" prompt
@@ -105,6 +105,10 @@ let
         mkdir -p win
         mkdir -p win/nix-win
         7z x -y ${windowsIso} -owin
+
+        # Split image so it fits in FAT32 partition
+        wimsplit win/sources/install.wim win/sources/install.swm 3072
+        rm win/sources/install.wim
 
         cp ${autounattend.autounattendXML} win/autounattend.xml
 
