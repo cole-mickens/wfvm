@@ -13,7 +13,7 @@
 , timeZone ? "UTC"
 , services ? {}
 , impureShellCommands ? []
-, driveLetter ? "E:"
+, driveLetter ? "D:"
 , ...
 }:
 

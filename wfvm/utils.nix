@@ -9,9 +9,10 @@ rec {
     "-cpu host"
     "-smp ${cores}"
     "-m ${qemuMem}"
+    "-M q35"
     "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
     "-rtc base=${baseRtc}"
-    "-device piix3-usb-uhci"
+    "-device qemu-xhci"
     "-device e1000,netdev=n1"
   ] ++ extraFlags;
 
