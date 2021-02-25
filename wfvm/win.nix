@@ -5,6 +5,8 @@
 , impureMode ? false
 , installCommands ? []
 , users ? {}
+# autounattend always installs index 1, so this default is backward-compatible
+, imageSelection ? "1"
 , ...
 }@attrs:
 
@@ -106,9 +108,19 @@ let
         mkdir -p win/nix-win
         7z x -y ${windowsIso} -owin
 
-        # Split image so it fits in FAT32 partition
-        wimsplit win/sources/install.wim win/sources/install.swm 3072
+        # Extract desired variant from install.wim
+        # This is useful if the install.wim contains multiple Windows
+        # versions (e.g., Home, Pro, ..), because the autounattend file
+        # will always select index 1. With this mechanism, a variant different
+        # from the first one can be automatically selected.
+        # imageSelection can be either an index (1-N) or the image name
+        # wiminfo can list all images contained in a given WIM file
+        wimexport win/sources/install.wim "${imageSelection}" win/sources/install_selected.wim
         rm win/sources/install.wim
+
+        # Split image so it fits in FAT32 partition
+        wimsplit win/sources/install_selected.wim win/sources/install.swm 3072
+        rm win/sources/install_selected.wim
 
         cp ${autounattend.autounattendXML} win/autounattend.xml
 
