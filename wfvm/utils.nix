@@ -1,4 +1,4 @@
-{ pkgs, baseRtc ? "2020-04-20T14:21:42", cores ? "4", qemuMem ? "4G" }:
+{ pkgs, baseRtc ? "2020-04-20T14:21:42", cores ? "4", qemuMem ? "4G", efi ? true }:
 
 rec {
   # qemu_test is a smaller closure only building for a single system arch
@@ -10,10 +10,11 @@ rec {
     "-smp ${cores}"
     "-m ${qemuMem}"
     "-M q35"
-    "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
     "-rtc base=${baseRtc}"
     "-device qemu-xhci"
     "-device e1000,netdev=n1"
+  ] ++ pkgs.lib.optionals efi [
+    "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
   ] ++ extraFlags;
 
   # Pass empty config file to prevent ssh from failing to create ~/.ssh

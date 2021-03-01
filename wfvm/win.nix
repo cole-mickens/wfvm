@@ -7,12 +7,13 @@
 , users ? {}
 # autounattend always installs index 1, so this default is backward-compatible
 , imageSelection ? "1"
+, efi ? true
 , ...
 }@attrs:
 
 let
   lib = pkgs.lib;
-  utils = import ./utils.nix { inherit pkgs; };
+  utils = import ./utils.nix { inherit pkgs efi; };
   libguestfs = pkgs.libguestfs-with-appliance;
 
   # p7zip on >20.03 has known vulns but we have no better option
@@ -85,7 +86,7 @@ let
         "usb-storage,drive=virtio-win"
         # USB boot
         "-drive"
-        "id=win-install,file=usbimage.img,if=none,format=raw,readonly=on"
+        "id=win-install,file=usbimage.img,if=none,format=raw,readonly=on,media=${if efi then "disk" else "cdrom"}"
         "-device"
         "usb-storage,drive=win-install"
         # Output image
@@ -98,7 +99,7 @@ let
       ''
         #!${pkgs.runtimeShell}
         set -euxo pipefail
-        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs pkgs.wimlib ]}:$PATH
+        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs pkgs.wimlib pkgs.cdrkit ]}:$PATH
 
         # Create a bootable "USB" image
         # Booting in USB mode circumvents the "press any key to boot from cdrom" prompt
@@ -124,7 +125,11 @@ let
 
         cp ${autounattend.autounattendXML} win/autounattend.xml
 
+        ${if efi then ''
         virt-make-fs --partition --type=fat win/ usbimage.img
+        '' else ''
+        mkisofs -iso-level 4 -l -R -udf -D -b boot/etfsboot.com -no-emul-boot -boot-load-size 8 -hide boot.catalog -eltorito-alt-boot -o usbimage.img win/
+        ''}
         rm -rf win
 
         # Qemu requires files to be rw

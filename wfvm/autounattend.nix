@@ -13,7 +13,8 @@
 , timeZone ? "UTC"
 , services ? {}
 , impureShellCommands ? []
-, driveLetter ? "D:"
+, efi ? true
+, driveLetter ? if efi then "E:" else "D:"
 , ...
 }:
 
@@ -144,12 +145,12 @@ let
               <CreatePartitions>
                 <CreatePartition wcm:action="add">
                   <Order>1</Order>
-                  <Type>EFI</Type>
-                  <Size>100</Size>
+                  <Type>${if efi then "EFI" else "Primary"}</Type>
+                  <Size>300</Size>
                 </CreatePartition>
                 <CreatePartition wcm:action="add">
                   <Order>2</Order>
-                  <Type>MSR</Type>
+                  <Type>${if efi then "MSR" else "Primary"}</Type>
                   <Size>16</Size>
                 </CreatePartition>
                 <CreatePartition wcm:action="add">
@@ -161,7 +162,7 @@ let
               <ModifyPartitions>
                 <ModifyPartition wcm:action="add">
                   <Order>1</Order>
-                  <Format>FAT32</Format>
+                  <Format>${if efi then "FAT32" else "NTFS"}</Format>
                   <Label>System</Label>
                   <PartitionID>1</PartitionID>
                 </ModifyPartition>
