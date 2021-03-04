@@ -30,8 +30,8 @@ in
         sha256 = "1mswlfybvk42vdr4r85dypgkwhrp5ff47gcbxgjqwq86ym44xzd4";
       };
       msys2-auto-install = pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/msys2/msys2-installer/master/auto-install.js";
-        sha256 = "0ww48xch2q427c58arg5llakfkfzh3kb32kahwplp0s7jc8224g7";
+        url = "https://raw.githubusercontent.com/msys2/msys2-installer/7b4b35f65904d03399d5dfb8fc4e5729b0b4d81f/auto-install.js";
+        sha256 = "17fq1xprbs00j8wb4m0w1x4dvb48qb5hwa3zx77snlhw8226d81y";
       };
     in ''
       ln -s ${msys2} ./msys2.exe
