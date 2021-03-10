@@ -86,7 +86,7 @@ let
         "usb-storage,drive=virtio-win"
         # USB boot
         "-drive"
-        "id=win-install,file=usbimage.img,if=none,format=raw,readonly=on,media=${if efi then "disk" else "cdrom"}"
+        "id=win-install,file=${if efi then "usb" else "cd"}image.img,if=none,format=raw,readonly=on,media=${if efi then "disk" else "cdrom"}"
         "-device"
         "usb-storage,drive=win-install"
         # Output image
@@ -99,7 +99,7 @@ let
       ''
         #!${pkgs.runtimeShell}
         set -euxo pipefail
-        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs pkgs.wimlib pkgs.cdrkit ]}:$PATH
+        export PATH=${lib.makeBinPath [ p7zip utils.qemu libguestfs pkgs.wimlib ]}:$PATH
 
         # Create a bootable "USB" image
         # Booting in USB mode circumvents the "press any key to boot from cdrom" prompt
@@ -128,7 +128,7 @@ let
         ${if efi then ''
         virt-make-fs --partition --type=fat win/ usbimage.img
         '' else ''
-        mkisofs -iso-level 4 -l -R -udf -D -b boot/etfsboot.com -no-emul-boot -boot-load-size 8 -hide boot.catalog -eltorito-alt-boot -o usbimage.img win/
+        ${pkgs.cdrkit}/bin/mkisofs -iso-level 4 -l -R -udf -D -b boot/etfsboot.com -no-emul-boot -boot-load-size 8 -hide boot.catalog -eltorito-alt-boot -o cdimage.img win/
         ''}
         rm -rf win
 
