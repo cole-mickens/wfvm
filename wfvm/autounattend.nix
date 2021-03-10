@@ -13,8 +13,8 @@
 , timeZone ? "UTC"
 , services ? {}
 , impureShellCommands ? []
+, driveLetter ? "D:"
 , efi ? true
-, driveLetter ? if efi then "E:" else "D:"
 , ...
 }:
 
