@@ -120,7 +120,7 @@ let
         rm win/sources/install.wim
 
         # Split image so it fits in FAT32 partition
-        wimsplit win/sources/install_selected.wim win/sources/install.swm 3072
+        wimsplit win/sources/install_selected.wim win/sources/install.swm 4096
         rm win/sources/install_selected.wim
 
         cp ${autounattend.autounattendXML} win/autounattend.xml
