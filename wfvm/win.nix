@@ -41,6 +41,12 @@ let
     sha256 = "668fe1af70c2f7416328aee3a0bb066b12dc6bbd2576f40f812b95741e18bc3a";
   };
 
+  # stable as of 2021-04-08
+  virtioWinIso = pkgs.fetchurl {
+    url = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.185-2/virtio-win-0.1.185.iso";
+    sha256 = "11n3kjyawiwacmi3jmfmn311g9xvfn6m0ccdwnjxw1brzb4kqaxg";
+  };
+
   openSshServerPackage = ./openssh/server-package.cab;
 
   autounattend = import ./autounattend.nix (
@@ -64,6 +70,8 @@ let
   bootstrapPkgs =
     runQemuCommand "bootstrap-win-pkgs.img" ''
       mkdir -p pkgs/fod
+
+      7z x -y ${virtioWinIso} -opkgs/virtio
 
       cp ${bundleInstaller} pkgs/"$(stripHash "${bundleInstaller}")"
 
@@ -91,7 +99,7 @@ let
         "usb-storage,drive=win-install"
         # Output image
         "-drive"
-        "file=c.img,index=0,media=disk,cache=unsafe"
+        "file=c.img,index=0,media=disk,if=virtio,cache=unsafe"
         # Network
         "-netdev user,id=n1,net=192.168.1.0/24,restrict=on"
       ]);
@@ -152,7 +160,7 @@ let
     qemuParams = utils.mkQemuFlags (lib.optional (!impureMode) "-display none" ++ [
       # Output image
       "-drive"
-      "file=c.img,index=0,media=disk,cache=unsafe"
+      "file=c.img,index=0,media=disk,if=virtio,cache=unsafe"
       # Network - enable SSH forwarding
       "-netdev user,id=n1,net=192.168.1.0/24,restrict=on,hostfwd=tcp::2022-:22"
     ]);

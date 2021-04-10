@@ -10,9 +10,10 @@ rec {
     "-smp ${cores}"
     "-m ${qemuMem}"
     "-M q35"
+    "-vga qxl"
     "-rtc base=${baseRtc}"
     "-device qemu-xhci"
-    "-device e1000,netdev=n1"
+    "-device virtio-net-pci,netdev=n1"
   ] ++ pkgs.lib.optionals efi [
     "-bios ${pkgs.OVMF.fd}/FV/OVMF.fd"
   ] ++ extraFlags;

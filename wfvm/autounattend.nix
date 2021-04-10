@@ -124,6 +124,9 @@ let
   # Windows expects a flat list of users while we want to manage them as a set
   flatUsers = builtins.attrValues (builtins.mapAttrs (name: s: s // { inherit name; }) users);
 
+  diskId =
+    if efi then 2 else 1;
+
   autounattendXML = pkgs.writeText "autounattend.xml" ''
     <?xml version="1.0" encoding="utf-8"?>
     <unattend xmlns="urn:schemas-microsoft-com:unattend">
@@ -135,6 +138,15 @@ let
             </PathAndCredentials>
             <PathAndCredentials wcm:action="add" wcm:keyValue="2">
               <Path>E:\</Path>
+            </PathAndCredentials>
+            <PathAndCredentials wcm:action="add" wcm:keyValue="3">
+              <Path>C:\virtio\amd64\w10</Path>
+            </PathAndCredentials>
+            <PathAndCredentials wcm:action="add" wcm:keyValue="4">
+              <Path>C:\virtio\NetKVM\w10\amd64</Path>
+            </PathAndCredentials>
+            <PathAndCredentials wcm:action="add" wcm:keyValue="5">
+              <Path>C:\virtio\qxldod\w10\amd64</Path>
             </PathAndCredentials>
           </DriverPaths>
         </component>
@@ -178,7 +190,7 @@ let
                   <PartitionID>3</PartitionID>
                 </ModifyPartition>
               </ModifyPartitions>
-              <DiskID>0</DiskID>
+              <DiskID>${toString diskId}</DiskID>
               <WillWipeDisk>true</WillWipeDisk>
             </Disk>
           </DiskConfiguration>
@@ -186,7 +198,7 @@ let
           <ImageInstall>
             <OSImage>
               <InstallTo>
-                <DiskID>0</DiskID>
+                <DiskID>${toString diskId}</DiskID>
                 <PartitionID>3</PartitionID>
               </InstallTo>
               <InstallFrom>
