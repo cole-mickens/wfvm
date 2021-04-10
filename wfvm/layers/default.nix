@@ -122,4 +122,36 @@ in
       sleep 40
       '';
   };
+  # Disable the Windows firewall
+  disable-firewall = {
+    name = "disable-firewall";
+    script = ''
+      echo Disabling firewall
+      win-exec "netsh advfirewall set allprofiles state off"
+    '';
+  };
+  # Disable automatic power management which causes the machine to go
+  # into standby after periods without mouse wiggling.
+  disable-autosleep = {
+    name = "disable-autosleep";
+    script = ''
+      echo Disabling autosleep
+      win-exec "powercfg /x -hibernate-timeout-ac 0"
+      win-exec "powercfg /x -hibernate-timeout-dc 0"
+      win-exec "powercfg /x -disk-timeout-ac 0"
+      win-exec "powercfg /x -disk-timeout-dc 0"
+      win-exec "powercfg /x -monitor-timeout-ac 0"
+      win-exec "powercfg /x -monitor-timeout-dc 0"
+      win-exec "powercfg /x -standby-timeout-ac 0"
+      win-exec "powercfg /x -standby-timeout-dc 0"
+    '';
+  };
+  # Turn off automatic locking of idle user sessions
+  disable-autolock = {
+    name = "disable-autolock";
+    script = ''
+      echo Disabling autolock
+      win-exec "reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Personalization /v NoLockScreen /t REG_DWORD /d 1"
+    '';
+  };
 }
