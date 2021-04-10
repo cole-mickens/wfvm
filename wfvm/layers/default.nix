@@ -154,4 +154,15 @@ in
       win-exec "reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Personalization /v NoLockScreen /t REG_DWORD /d 1"
     '';
   };
+
+  # Chain together layers that are quick to run so that the VM does
+  # not have to be started/shutdown for each.
+  collapseLayers = scripts: {
+    name = pkgs.lib.concatMapStringsSep "-" ({ name, ... }: name) scripts;
+    script = builtins.concatStringsSep "\n" (
+      map ({ script, ... }: script) scripts
+    );
+    buildInputs =
+      builtins.concatMap ({ buildInputs ? [], ... }: buildInputs) scripts;
+  };
 }

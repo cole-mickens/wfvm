@@ -41,7 +41,11 @@ wfvm.makeWindowsImage {
     if impureMode
     then []
     else with wfvm.layers; [
-      disable-autosleep disable-autolock disable-firewall
+      (collapseLayers [
+        disable-autosleep
+        disable-autolock
+        disable-firewall
+      ])
       anaconda3 msys2 msvc msvc-ide-unbreak
     ];
 
