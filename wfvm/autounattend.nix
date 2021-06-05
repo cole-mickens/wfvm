@@ -15,6 +15,7 @@
 , impureShellCommands ? []
 , driveLetter ? "D:"
 , efi ? true
+, imageSelection ? "Windows 10 Pro"
 , ...
 }:
 
@@ -203,8 +204,8 @@ let
               </InstallTo>
               <InstallFrom>
                 <MetaData wcm:action="add">
-                  <Key>/IMAGE/INDEX</Key>
-                  <Value>1</Value>
+                  <Key>/IMAGE/NAME</Key>
+                  <Value>${imageSelection}</Value>
                 </MetaData>
               </InstallFrom>
             </OSImage>
@@ -302,7 +303,7 @@ let
         </component>
       </settings>
 
-      <cpi:offlineImage cpi:source="wim:c:/wim/windows-10/install.wim#Windows 10 Enterprise LTSC 2019 Evaluation" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
+       <cpi:offlineImage cpi:source="wim:c:/wim/windows-10/install.wim#${imageSelection}" xmlns:cpi="urn:schemas-microsoft-com:cpi" />
     </unattend>
   '';
 
