@@ -50,12 +50,8 @@ let
     # mkDirsDesc ++ writeKeysDesc ++
   [
     {
-      Path = ''powershell.exe Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -Source ${driveLetter}\fod -LimitAccess'';
-      Description = "Add OpenSSH service.";
-    }
-    {
-      Path = ''powershell.exe Set-Service -Name sshd -StartupType Automatic'';
-      Description = "Enable SSH by default.";
+      Path = ''powershell.exe ${driveLetter}\install-ssh.ps1'';
+      Description = "Install OpenSSH service.";
     }
   ];
 
@@ -77,7 +73,7 @@ let
     ++ setupCommands
     ++ [
       {
-        Path = ''powershell.exe ${driveLetter}\ssh-setup.ps1'';
+        Path = ''powershell.exe ${driveLetter}\setup.ps1'';
         Description = "Setup SSH and keys";
       }
     ]
@@ -314,7 +310,7 @@ in {
   '';
 
   # autounattend.xml is _super_ picky about quotes and other things
-  setupScript = pkgs.writeText "ssh-setup.ps1" (
+  setupScript = pkgs.writeText "setup.ps1" (
     ''
       # Setup SSH and keys
     '' +

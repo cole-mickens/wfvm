@@ -47,7 +47,10 @@ let
     sha256 = "11n3kjyawiwacmi3jmfmn311g9xvfn6m0ccdwnjxw1brzb4kqaxg";
   };
 
-  openSshServerPackage = ./openssh/server-package.cab;
+  openSshServerPackage = pkgs.fetchurl {
+    url = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/V8.6.0.0p1-Beta/OpenSSH-Win64.zip";
+    sha256 = "1dw6n054r0939501dpxfm7ghv21ihmypdx034van8cl21gf1b4lz";
+  };
 
   autounattend = import ./autounattend.nix (
     attrs // {
@@ -69,17 +72,16 @@ let
   # Packages required to drive installation of other packages
   bootstrapPkgs =
     runQemuCommand "bootstrap-win-pkgs.img" ''
-      mkdir -p pkgs/fod
-
       7z x -y ${virtioWinIso} -opkgs/virtio
 
       cp ${bundleInstaller} pkgs/"$(stripHash "${bundleInstaller}")"
 
       # Install optional windows features
-      cp ${openSshServerPackage} pkgs/fod/OpenSSH-Server-Package~31bf3856ad364e35~amd64~~.cab
+      cp ${openSshServerPackage} pkgs/OpenSSH-Win64.zip
 
       # SSH setup script goes here because windows XML parser sucks
-      cp ${autounattend.setupScript} pkgs/ssh-setup.ps1
+      cp ${./install-ssh.ps1} pkgs/install-ssh.ps1
+      cp ${autounattend.setupScript} pkgs/setup.ps1
 
       virt-make-fs --partition --type=fat pkgs/ $out
     '';
