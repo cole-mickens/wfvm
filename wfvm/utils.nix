@@ -60,8 +60,10 @@ rec {
     echo win-put $1 -\> $2
     ${pkgs.sshpass}/bin/sshpass -p1234 -- \
       ${pkgs.openssh}/bin/sftp -r -P 2022 ${sshOpts} \
-      wfvm@localhost <<< "cd $2
-        put $1"
+      wfvm@localhost -b- << EOF
+        cd $2
+        put $1
+    EOF
   '';
   win-get = pkgs.writeShellScriptBin "win-get" ''
     set -e
