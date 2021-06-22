@@ -1,0 +1,34 @@
+name: "rebase"
+on:
+  push:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: mirror
+      run: |
+        set -x
+        set -euo pipefail
+        git config --global user.name 'Cole Botkens'
+        git config --global user.email 'cole.mickens+colebot@gmail.com'
+
+        git remote add mlabs 'https://git.m-labs.hk/M-Labs/wfvm'
+        git remote update
+        
+        git format-patch -1 origin/master origin/master^ --stdout | tee /tmp/patch
+
+        git reset --hard mlabs/master
+        cat /tmp/patch | git am -3
+        
+        if ! git diff-tree --exit-code origin/master master; then
+          echo "we must have had some real work, so lets actually push"
+          git push origin HEAD -f
+        else
+          echo "there must not have been any actual rebase done, lets not churn the commit"
+        fi
