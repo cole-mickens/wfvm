@@ -2,7 +2,7 @@
 
 rec {
   # qemu_test is a smaller closure only building for a single system arch
-  qemu = pkgs.qemu_test;
+  qemu = pkgs.qemu;
 
   mkQemuFlags = extraFlags: [
     "-enable-kvm"
