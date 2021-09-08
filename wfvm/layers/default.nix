@@ -154,6 +154,16 @@ in
       win-exec "reg add HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows\Personalization /v NoLockScreen /t REG_DWORD /d 1"
     '';
   };
+  # Don't let Windows start completely rewriting gigabytes of disk
+  # space. Defragmentation increases the size of our qcow layers
+  # needlessly.
+  disable-scheduled-defrag = {
+    name = "disable-scheduled-defrag";
+    script = ''
+      echo Disabling scheduled defragmentation service
+      win-exec 'schtasks /Change /DISABLE /TN "\Microsoft\Windows\Defrag\ScheduledDefrag"'
+    '';
+  };
 
   # Chain together layers that are quick to run so that the VM does
   # not have to be started/shutdown for each.
