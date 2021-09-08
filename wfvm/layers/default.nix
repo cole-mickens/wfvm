@@ -8,8 +8,8 @@ in
     script = let
       Anaconda3 = pkgs.fetchurl {
         name = "Anaconda3.exe";
-        url = "https://repo.anaconda.com/archive/Anaconda3-2020.02-Windows-x86_64.exe";
-        sha256 = "0n31l8l89jrjrbzbifxbjnr3g320ly9i4zfyqbf3l9blf4ygbhl3";
+        url = "https://repo.anaconda.com/archive/Anaconda3-2021.05-Windows-x86_64.exe";
+        sha256 = "1lpk7k4gydyk524z1nk4rrninrwi20g2ias2njc9w0a40hwl5nwk";
       };
     in
       ''
@@ -93,7 +93,7 @@ in
 
         outputHashAlgo = "sha256";
         outputHashMode = "recursive";
-        outputHash = "0fp7a6prjp8n8sirwday13wis3xyzhmrwi377y3x89nxzysp0mnv";
+        outputHash = "0axaym774p2w49pja1vqlx3x6fdylfjkpiybrqkyfc605r07xqyk";
 
         phases = [ "buildPhase" ];
         buildInputs = [ download-vs ];
