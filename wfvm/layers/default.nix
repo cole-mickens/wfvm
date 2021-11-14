@@ -71,8 +71,8 @@ in
     script = let
       bootstrapper = pkgs.fetchurl {
         name = "RESTRICTDIST-vs_Community.exe";
-        url = "https://download.visualstudio.microsoft.com/download/pr/343898a7-7d12-4faa-b5df-958b31e57b3e/0e17eb53023c8a4d07e1dfd201e8a0ebff2c56c74ad594c8f02521fb5b27c7db/vs_Community.exe";
-        sha256 = "1ny74xdzn895y3499maaqxb2rzzbl3l03lnzw43lv2iw099yn5qf";
+        url = "https://aka.ms/vs/16/release/vs_community.exe";
+        sha256 = "0b3csxz0qsafnvc0d74ywfpralwz8chv4zf9k07akpm8lp8ycgq0";
       };
       # This touchy-feely "community" piece of trash seems deliberately crafted to break Wine, so we use the VM to run it.
       download-vs = wfvm.utils.wfvm-run {
@@ -93,7 +93,7 @@ in
 
         outputHashAlgo = "sha256";
         outputHashMode = "recursive";
-        outputHash = "1c9cmcsm7qmhkhv98f1vgbfxy0jzyr4rxa1z6myx2zwq13p94pj9";
+        outputHash = "0ic3jvslp2y9v8yv9mfr2mafkvj2q5frmcyhmlbxj71si1x3kpag";
 
         phases = [ "buildPhase" ];
         buildInputs = [ download-vs ];
@@ -118,7 +118,7 @@ in
     name = "MSVC-ide-unbreak";
     script =
       ''
-      win-exec 'cd "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE" && devenv /ResetSettings'
+      win-exec 'cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE" && devenv /ResetSettings'
       sleep 40
       '';
   };
